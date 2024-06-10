@@ -1,11 +1,6 @@
 {
-<<<<<<< Updated upstream
-    "name": "zgabievi/laravel-promocodes",
-    "description": "Coupons and promotional codes generator for Laravel.",
-=======
     "name": "tharsha/laravel-promocodes",
     "description": ":package_description",
->>>>>>> Stashed changes
     "license": "MIT",
     "authors": [
         {

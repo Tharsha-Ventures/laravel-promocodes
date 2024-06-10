@@ -21,7 +21,7 @@ install [zgabievi/nova-promocodes](https://github.com/zgabievi/nova-promocodes).
 You can install the package via composer:
 
 ```bash
-composer require zgabievi/laravel-promocodes
+composer require tharsha/laravel-promocodes
 ```
 
 ## Configuration
