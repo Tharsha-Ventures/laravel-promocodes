@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Zorb\Promocodes\Exceptions\{
     PromocodeAlreadyUsedByUserException,
@@ -11,11 +12,12 @@ use Zorb\Promocodes\Exceptions\{
     UserHasNoAppliesPromocodeTrait,
     UserRequiredToAcceptPromocode
 };
-use Zorb\Promocodes\Tests\Models\{User, UserWithoutTrait};
+use Zorb\Promocodes\Tests\Models\{User, UserWithoutTrait, UserWithoutAuthenticatable};
 use Zorb\Promocodes\Contracts\PromocodeContract;
 use Zorb\Promocodes\Facades\Promocodes;
 use Zorb\Promocodes\Models\Promocode;
 use Zorb\Promocodes\Models\PromocodeUser;
+use Zorb\Promocodes\Rules\ValidPromocode;
 
 it('should set code to variable, but not promocode', function () {
     $code = 'FOO-BAR';
@@ -113,6 +115,16 @@ it('should throw exception if user model us not using trait', function () {
 it('should create promocode-user association', function () {
     $code = 'ABC-DEF';
     $user = User::factory()->create();
+    $promocode = Promocode::factory()->code($code)->notExpired()->usagesLeft(2)->create();
+
+    Promocodes::code($code)->user($user)->apply();
+
+    expect($promocode->users()->first()->id)->toEqual($user->id);
+});
+
+it('should create promocode-user association without authenticatable trait', function () {
+    $code = 'ABC-DEF';
+    $user = UserWithoutAuthenticatable::factory()->create();
     $promocode = Promocode::factory()->code($code)->notExpired()->usagesLeft(2)->create();
 
     Promocodes::code($code)->user($user)->apply();
@@ -259,4 +271,59 @@ it('should try to create unique code', function () {
     Promocodes::mask('**')->characters('AB')->create();
 
     expect(Promocode::where('code', 'BA')->exists())->toBeTrue();
+});
+
+it('should return all promocodes', function () {
+    Promocode::factory()->code('AA')->notExpired()->usagesLeft(5)->create();
+    Promocode::factory()->code('BB')->notExpired()->usagesLeft(2)->create();
+    Promocode::factory()->code('AB')->expired()->usagesLeft(-1)->create();
+    Promocode::factory()->code('BA')->notExpired()->usagesLeft(0)->create();
+
+    expect(count(Promocodes::all()))->toEqual(4);
+});
+
+it('should return available promocodes', function () {
+    Promocode::factory()->code('AA')->notExpired()->usagesLeft(5)->create();
+    Promocode::factory()->code('BB')->notExpired()->usagesLeft(2)->create();
+    Promocode::factory()->code('AB')->expired()->usagesLeft(-1)->create();
+    Promocode::factory()->code('BA')->notExpired()->usagesLeft(0)->create();
+
+    expect(count(Promocodes::available()))->toEqual(2);
+});
+
+it('should return not available promocodes', function () {
+    Promocode::factory()->code('AA')->notExpired()->usagesLeft(5)->create();
+    Promocode::factory()->code('BB')->notExpired()->usagesLeft(2)->create();
+    Promocode::factory()->code('AB')->expired()->usagesLeft(-1)->create();
+    Promocode::factory()->code('BA')->notExpired()->usagesLeft(0)->create();
+
+    expect(count(Promocodes::notAvailable()))->toEqual(2);
+});
+
+it('should fail validation when code doesn\'t exist', function () {
+    $validator = Validator::make(['code' => 'AA-BB'], [
+        'code' => ['required', 'string', new ValidPromocode()],
+    ]);
+
+    expect($validator->fails())->toBeTrue();
+});
+
+it('should fail validation when code is expired', function () {
+    Promocode::factory()->code('AA-BB')->expired()->usagesLeft(5)->create();
+
+    $validator = Validator::make(['code' => 'AA-BB'], [
+        'code' => ['required', 'string', new ValidPromocode()],
+    ]);
+
+    expect($validator->fails())->toBeTrue();
+});
+
+it('should pass validation when code is valid', function () {
+    Promocode::factory()->code('AA-BB')->notExpired()->usagesLeft(5)->create();
+
+    $validator = Validator::make(['code' => 'AA-BB'], [
+        'code' => ['required', 'string', new ValidPromocode()],
+    ]);
+
+    expect($validator->fails())->toBeFalse();
 });

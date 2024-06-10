@@ -15,7 +15,7 @@ use Zorb\Promocodes\Events\UserAppliedPromocode;
 use Zorb\Promocodes\Contracts\PromocodeContract;
 use Zorb\Promocodes\Traits\AppliesPromocode;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Foundation\Auth\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Carbon\CarbonInterface;
 
@@ -72,9 +72,9 @@ class Promocodes
     protected ?CarbonInterface $expiredAt = null;
 
     /**
-     * @var User|null
+     * @var Model|null
      */
-    protected ?User $user = null;
+    protected ?Model $user = null;
 
     /**
      * @var PromocodeContract|null
@@ -96,10 +96,10 @@ class Promocodes
     }
 
     /**
-     * @param User $user
+     * @param Model $user
      * @return $this
      */
-    public function user(User $user): static
+    public function user(Model $user): static
     {
         $this->user = $user;
         return $this;
@@ -327,5 +327,31 @@ class Promocodes
     protected function codeExists(string $code, array $existingCodes): bool
     {
         return in_array($code, $existingCodes, true);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function all(): Collection
+    {
+        return app(PromocodeContract::class)->all();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function available(): Collection
+    {
+        return app(PromocodeContract::class)->whereNot('usages_left', 0)->where(function ($query) {
+            $query->whereNull('expired_at')->orWhere('expired_at', '>', now());
+        })->get();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function notAvailable(): Collection
+    {
+        return app(PromocodeContract::class)->where('usages_left', 0)->orWhere('expired_at', '<=', now())->get();
     }
 }

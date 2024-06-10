@@ -5,7 +5,7 @@ namespace Zorb\Promocodes\Contracts;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Auth\User;
+use Illuminate\Database\Eloquent\Model;
 
 interface PromocodeContract
 {
@@ -31,5 +31,5 @@ interface PromocodeContract
     public function hasUsagesLeft(): bool;
 
     //
-    public function allowedForUser(User $user): bool;
+    public function allowedForUser(Model $user): bool;
 }

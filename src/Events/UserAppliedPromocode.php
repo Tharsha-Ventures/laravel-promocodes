@@ -5,6 +5,7 @@ namespace Zorb\Promocodes\Events;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Zorb\Promocodes\Contracts\PromocodeContract;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Auth\User;
 
@@ -18,15 +19,15 @@ class UserAppliedPromocode
     public PromocodeContract $promocode;
 
     /**
-     * @var User
+     * @var Model
      */
-    public User $user;
+    public Model $user;
 
     /**
      * @param PromocodeContract $promocode
-     * @param User $user
+     * @param Model $user
      */
-    public function __construct(PromocodeContract $promocode, User $user)
+    public function __construct(PromocodeContract $promocode, Model $user)
     {
         $this->promocode = $promocode;
         $this->user = $user;
