@@ -53,6 +53,7 @@ if (!function_exists('createPromocodes')) {
      * @param Model|null $user
      * @param bool $boundToUser
      * @param CarbonInterface|null $expiration
+     * @param array $details
      * @return Collection
      */
     function createPromocodes(?string $mask = null, ?string $characters = null, int $count = 1, bool $unlimited = false, int $usages = 1, bool $multiUse = false, ?Model $user = null, bool $boundToUser = false, ?CarbonInterface $expiration = null, array $details = []): Collection

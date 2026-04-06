@@ -1,4 +1,3 @@
-[![#StandWithUkraine](https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1)](https://supportukrainenow.org)
 [![laravel-promocodes](https://banners.beyondco.de/laravel-promocodes.jpeg?theme=light&packageManager=composer+require&packageName=zgabievi%2Flaravel-promocodes&pattern=topography&style=style_2&description=Coupons+and+promotional+codes+generator.&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg)](https://github.com/zgabievi/laravel-promocodes)
 
 # laravel-promocodes
@@ -7,21 +6,22 @@
 [![Packagist](https://img.shields.io/packagist/dt/zgabievi/promocodes.svg)](https://packagist.org/packages/zgabievi/promocodes)
 [![license](https://img.shields.io/github/license/zgabievi/promocodes.svg)](https://packagist.org/packages/zgabievi/promocodes)
 
-Coupons and promotional codes generator for [Laravel](https://laravel.com). Current release is only
-for [Laravel 9.x](https://laravel.com/docs/9.x) and [PHP 8.1](https://www.php.net/releases/8.1/en.php). It's completely
-rewritten, and if you are using previous version, you should change your code accordingly. Code is simplified now and it
+Coupons and promotional codes generator for [Laravel](https://laravel.com). Current release support Laravel 9, 10 and 11 It's completely rewritten, and if you are using previous version, you should change your code accordingly. Code is simplified now and it
 should take you several minutes to completely rewrite usage.
 
 > **Attention:**
 > Current version is completely rewritten. If you are missing some functionality, that was possible to achieve in previous versions, fill free to open issue.
 > Hope this new version will be easier to use, and it will provide better functionality for your needs.
 
+**If you want to use this package with [Laravel Nova](https://github.com/zgabievi/nova-promocodes), please
+install [zgabievi/nova-promocodes](https://github.com/zgabievi/nova-promocodes).**
+
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require zgabievi/laravel-promocodes
+composer require tharsha/laravel-promocodes
 ```
 
 ## Configuration
@@ -84,7 +84,7 @@ It's very easy to use. Methods are combined, so that you can configure promocode
 
 - [Reference](#reference)
 - [Creating Promocodes](#creating-promocodes)
-- [Generating Promocodes](#creating-promocodes)
+- [Generating Promocodes](#generating-promocodes)
 - [Applying Promocode](#applying-promocode)
 - [Expiring Promocode](#expiring-promocode)
 - [Additional Methods](#additional-methods)
@@ -218,7 +218,8 @@ php artisan promocodes:apply ABC-DEF --user=1
 
 #### Exceptions
 
-While trying to apply promocode, you should be aware of exceptions. Most part of the code throws exceptions, when there is a problem:
+While trying to apply promocode, you should be aware of exceptions. Most part of the code throws exceptions, when there
+is a problem:
 
 ```php
 // Zorb\Promocodes\Exceptions\*
@@ -272,9 +273,9 @@ If you added AppliesPromocode trait to your user model, you will have some addit
 ```php
 $user = User::find(1);
 
-$user->appliedPromocodes // Returns promocodes applied by user
-$user->boundPromocodes // Returns promocodes bound to user
-$user->applyPromocode('ABC-DEF') // Applies promocode to user
+$user->appliedPromocodes; // Returns promocodes applied by user
+$user->boundPromocodes; // Returns promocodes bound to user
+$user->applyPromocode('ABC-DEF'); // Applies promocode to user
 ```
 
 ## Additional Methods

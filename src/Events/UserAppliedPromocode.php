@@ -7,6 +7,7 @@ use Zorb\Promocodes\Contracts\PromocodeContract;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Auth\User;
 
 class UserAppliedPromocode
 {
